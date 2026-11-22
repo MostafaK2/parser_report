@@ -1,0 +1,7 @@
+openpyxl>=3.0
+
+# The app window also needs tkinter. It is part of Python, NOT a pip package,
+# so it can't be installed from this file. If you get "No module named '_tkinter'":
+#   Mac (Homebrew Python):  brew install python-tk@3.14   (match your Python version)
+#   Ubuntu/Debian Linux:    sudo apt install python3-tk
+#   Windows / python.org:   already included

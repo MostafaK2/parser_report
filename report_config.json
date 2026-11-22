@@ -1,0 +1,124 @@
+{
+  "sheet_name": "Shift Report",
+
+  "header": {
+    "section_match": ["header"],
+    "fields": { "date": ["date"], "shift": ["shift"] }
+  },
+
+  "personnel": {
+    "section_match": ["personnel"],
+    "roles": {
+      "dispatcher": ["dispatcher", "dispatch", "disp"],
+      "supervisor": ["supervisor", "lt", "lieutenant", "sgt", "sergeant"],
+      "officer":    ["officer", "pso"]
+    },
+    "staff_line_order": ["dispatcher", "supervisor", "officer"],
+    "include_other_blocks": true,
+
+    "site_roles": ["officer", "supervisor"],
+    "manual_only_roles": ["dispatcher"],
+    "fallback_site": "Doble",
+
+    "staff_lines": [
+      { "label": "Doble",    "blocks": ["doble"],           "site": { "campus": "Doble" } },
+      { "label": "Uhall",    "blocks": ["porter", "uhall"], "site": { "campus": "Porter" } },
+      { "label": "South",    "blocks": ["south"],           "site": { "campus": "South" } },
+      { "label": "Lunder",   "labels": ["lunder"],          "site": { "match": ["lunder", "1801 mass"], "fallback": "Uhall" } },
+      { "label": "Details",  "blocks": ["details"] },
+      { "label": "Training", "blocks": ["training"] }
+    ]
+  },
+
+  "campuses": {
+    "Doble": {
+      "names": ["doble", "doble campus"],
+      "nicknames": ["student life", "schwartz", "wolfard", "mackenzie", "glennon", "malloch", "global",
+                    "jenckes", "kirkland", "wendell wellness", "wilbur", "hitz", "threshold", "stebbins",
+                    "white café", "white dorm", "wilson", "buoma", "liberal arts", "doble hall",
+                    "facilities", "classrooms", "residential"],
+      "keywords": ["mellen", "oxford", "everett", "wendell"]
+    },
+    "South": {
+      "names": ["south", "south campus"],
+      "nicknames": ["grounds", "washburn", "advancement", "chapel", "wright", "burnham", "reed",
+                    "lawrence", "winthrop", "kidder", "rousmaniere", "eds", "grad", "sherrill"],
+      "keywords": ["hastings", "phillips", "brattle", "st. john", "st johns", "st. johns", "harvard sq"]
+    },
+    "Porter": {
+      "names": ["porter", "porter sq", "porter square", "porter square campus", "porter campus", "uhall"],
+      "nicknames": ["lunder", "uhall", "presidents house"],
+      "keywords": ["lunder", "1801 mass", "1815 mass", "prentiss", "roseland", "somerville"]
+    }
+  },
+
+  "location_rules": [
+    {
+      "name": "34R Prentiss rule",
+      "match": ["34r prentiss"],
+      "site": "Doble",
+      "roles": ["supervisor", "dispatcher", "officer"]
+    }
+  ],
+
+  "settings": {
+    "pda":    { "label": "PDA tours",              "options": ["ask", "rotate", "random"], "default": "ask", "cli_default": "rotate" },
+    "visual": { "label": "Visual tours",           "options": ["ask", "rotate", "random"], "default": "ask", "cli_default": "rotate" },
+    "lock":   { "label": "Locks, escorts, tickets", "options": ["ask", "auto"],            "default": "ask", "cli_default": "auto" }
+  },
+
+  "sections": [
+    {
+      "match": ["incident"], "type": "rows", "label": "Incident",
+      "columns": { "time": ["time"], "desc": ["desc"], "location": ["building", "area"], "dept": ["contact"] },
+      "required": ["time", "desc"],
+      "template": ["{time}: IR: {desc}.", " IR at {location}.", " {dept} contacted."]
+    },
+    {
+      "match": ["pda"], "type": "tours_by_row", "label": "PDA", "category": "pda",
+      "columns": { "location": ["location"], "done_by": ["by", "officer", "performed", "who"] },
+      "rotation": ["officer", "supervisor"],
+      "template": ["{time}: {officer} started a PDA tour of {place}"]
+    },
+    {
+      "match": ["visual"], "type": "tours_in_cells", "label": "Visual", "category": "visual",
+      "rotation": ["officer", "supervisor"],
+      "template": ["{time}: {officer} started a Visual tour of {place}"]
+    },
+    {
+      "match": ["routine", "lock"], "type": "rows", "label": "Routine lock", "category": "lock",
+      "columns": { "time": ["time"], "location": ["building", "area"], "action": ["locked"], "done_by": ["done by", "performed"] },
+      "required": ["time", "location", "action"],
+      "lowercase": ["action"],
+      "rotation": ["officer", "supervisor"],
+      "template": ["{time}: {officer} {action} {location}"]
+    },
+    {
+      "match": ["special", "lock"], "type": "rows", "label": "Special lock", "category": "lock",
+      "columns": { "time": ["time"], "location": ["building", "area"], "action": ["locked"],
+                   "affiliate": ["affiliate"], "requestor": ["requestor"], "done_by": ["done by", "performed"] },
+      "required": ["time", "location", "action"],
+      "lowercase": ["action"],
+      "rotation": ["officer", "supervisor"],
+      "template": ["{time}: {officer} {action} {location}"]
+    },
+    {
+      "match": ["contractor"], "type": "rows", "label": "Escort", "category": "lock",
+      "columns": { "time": ["time"], "location": ["building", "area"], "contractor": ["contractor"],
+                   "affiliate": ["affiliate"], "requestor": ["requestor"], "done_by": ["done by", "performed"] },
+      "required": ["time", "location"],
+      "rotation": ["officer", "supervisor"],
+      "template": ["{time}: {officer} escorted", " {contractor}", " at {location}", " per {requestor}"]
+    },
+    {
+      "match": ["ticket"], "type": "rows", "label": "Ticket", "category": "lock",
+      "columns": { "time": ["time"], "location": ["location"], "tickets": ["ticket"] },
+      "required": ["time", "location", "tickets"],
+      "nonzero": ["tickets"],
+      "rotation": ["officer", "supervisor"],
+      "template": ["{time}: {officer} issued {tickets} at {location}"]
+    }
+  ],
+
+  "not_in_dar": ["uber", "inventory", "weather", "system verification", "summary", "work order"]
+}

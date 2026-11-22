@@ -1,0 +1,29 @@
+/build
+
+# Bytecode & C extensions
+__pycache__/
+*.py[cod]
+*.so
+
+# Environments & Secrets
+.env
+.venv
+env/
+venv/
+.venv-build
+
+
+# Distribution & Packaging
+build/
+dist/
+*.egg-info/
+
+# Testing & Coverage
+.tox/
+.coverage
+.pytest_cache/
+
+# IDEs & OS
+.vscode/
+.idea/
+.DS_Store
